@@ -2,92 +2,79 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23068394.svg)](https://doi.org/10.5281/zenodo.23068394)
-[![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)](https://www.python.org/)
-[![R](https://img.shields.io/badge/R-%E2%89%A5%204.2.0-blue.svg)](https://www.r-project.org/)
+[![Language: R](https://img.shields.io/badge/Language-R%20%E2%89%A5%204.2-blue.svg)](https://www.r-project.org/)
+[![Language: Python](https://img.shields.io/badge/Language-Python%20%E2%89%A5%203.10-blue.svg)](https://www.python.org/)
 
-Standardized single-cell multi-omics preprocessing and empirical PAGA lineage tree reconstruction pipelines across 16 plant tissues (*Oryza sativa*, *Glycine max*, and *Arabidopsis thaliana*).
+This repository contains custom analysis scripts supporting the manuscript:
+> **Benchmarking Single-Cell Multi-Omics Simulation and Integration Methods in Plant Systems**  
+> *Authors: Kabilan Sakthivel, Dwijesh Chandra Mishra, et al.*  
+> ICAR - Indian Agricultural Research Institute (IARI) & ICAR - Indian Agricultural Statistics Research Institute (IASRI)
+
+This repository serves as a transparent code archive detailing the computational workflows, parameterizations, and data processing routines utilized in this study.
 
 ---
 
-## Repository Structure
+## Repository Structure & Script Catalog
 
 ```
 plant-scMultiome-simulation/
-├── 01_preprocessing/                          # Standardized 3:1 multiomic preprocessing (Seurat/Signac)
-│   ├── preprocess_arabidopsis_root.R          # Arabidopsis Root atlas (21 clusters, GSE155304)
-│   ├── preprocess_rice_all_tissues.R          # Rice 8 organs (Bud, Flag, Leaf, Root, SAM, Seed, SP, ST)
-│   └── preprocess_soybean_all_tissues.R       # Soybean 7 tissues & developmental stages
-└── 02_lineage_trees_paga/                     # Empirical PAGA lineage trajectory extraction (Scanpy)
+├── 01_preprocessing/                          # Multi-omics standardization workflows
+│   ├── preprocess_arabidopsis_root.R          # Arabidopsis Root atlas (21 developmental clusters)
+│   ├── preprocess_rice_all_tissues.R          # Rice (8 organs/tissues)
+│   └── preprocess_soybean_all_tissues.R       # Soybean (7 tissues & developmental stages)
+└── 02_lineage_trees_paga/                     # Empirical PAGA lineage trajectory extraction
     ├── arabidopsis/
     │   ├── export_arab_standardized_to_anndata.R
-    │   ├── arab_paga_lineage_tree.py
-    │   └── run_all_arab_paga.bat
+    │   └── arab_paga_lineage_tree.py
     ├── rice/
     │   ├── export_rice_standardized_to_anndata.R
-    │   ├── rice_paga_lineage_tree.py
-    │   ├── run_all_rice_paga.bat
-    │   └── run_rice_paga_cluster.pbs
+    │   └── rice_paga_lineage_tree.py
     └── soybean/
         ├── export_soybean_standardized_to_anndata.R
-        ├── soybean_paga_lineage_tree.py
-        └── run_all_soybean_paga.bat
+        └── soybean_paga_lineage_tree.py
 ```
 
 ---
 
-## Installation
+## Script Descriptions & Methodological Roles
 
-Ensure R ($\ge$ 4.2.0) and Python ($\ge$ 3.10) are installed:
+### 1. Data Preprocessing & Standardization (`01_preprocessing/`)
+Implements uniform feature selection and dual-stratified subsampling across 16 plant tissues to establish consistent 3:1 multiomic feature ratios (2,000 RNA HVGs to 6,000 accessible chromatin peaks) while preserving cell-type representations:
 
-```bash
-# Python dependencies
-pip install -r requirements.txt
+* **`preprocess_arabidopsis_root.R`**: Integrates and standardizes unpaired single-nucleus RNA-seq and ATAC-seq data from the *Arabidopsis thaliana* root atlas (GEO: GSE155304), resolving 21 developmental clusters across 6 canonical cell types.
+* **`preprocess_rice_all_tissues.R`**: Standardizes paired single-cell multiomics data across 8 *Oryza sativa* tissues: Bud, Flag leaf, Young leaf, Root, Shoot Apical Meristem (SAM), Developing seed, Spikelet/Panicle (SP), and Stem (ST).
+* **`preprocess_soybean_all_tissues.R`**: Processes paired multiomics datasets across 7 *Glycine max* tissues and seed developmental stages (Cotyledon, Early maturation, Early nodule, Globular, Heart, Hypocotyl, and Root).
 
-# Or via conda
-conda env create -f environment.yml
-```
+### 2. Empirical Lineage Trajectory Inference (`02_lineage_trees_paga/`)
+Derives data-driven cell lineage trees from empirical high-dimensional transcriptomic geometry using Partition-based Graph Abstraction (PAGA) and Diffusion Pseudotime (DPT) to condition multiomics simulations in `scMultiSim`:
+
+* **`export_*_standardized_to_anndata.R`**: Translates standardized Seurat objects into Scanpy-compatible AnnData matrix formats.
+* **`*_paga_lineage_tree.py`**: 
+  - Computes statistical connectivity between cell clusters and identifies biological progenitor roots (e.g., Root Apical Meristem, SAM, Procambium).
+  - Calculates Diffusion Pseudotime (DPT) and Maximum Spanning Tree (MST) trajectory backbones.
+  - Exports dual Newick formats: `all_tips.nwk` (guaranteeing exact 1-to-1 tip matching for `scMultiSim` population vectors) and `classic.nwk` (macro-topology).
 
 ---
 
-## Usage
+## Software Dependencies & Environment
 
-### 1. Preprocessing (Standardized 3:1 Feature Ratio)
-Extracts 2,000 RNA HVGs $\times$ 6,000 accessible chromatin peaks with dual-stratified cell subsampling (max 200 cells per cell type $\times$ batch):
+The analysis was conducted using the following computational environments:
 
-```bash
-# Rice (all 8 tissues)
-Rscript 01_preprocessing/preprocess_rice_all_tissues.R --tissue all
+* **R (v4.6.1 / ≥ 4.2.0)**: `Seurat` (≥ 5.0.0), `Signac` (≥ 1.12.0), `Matrix`, `ggplot2`, `dplyr`, `ape`
+* **Python (v3.12 / ≥ 3.10)**: `scanpy` (1.12.4), `anndata` (0.13.4), `igraph` (1.0.0), `leidenalg` (0.12.0), `networkx` (3.4), `biopython` (1.85)
 
-# Soybean (all 7 tissues)
-Rscript 01_preprocessing/preprocess_soybean_all_tissues.R --tissue all
-
-# Arabidopsis Root (21 clusters)
-Rscript 01_preprocessing/preprocess_arabidopsis_root.R
-```
-
-### 2. Empirical Lineage Tree Reconstruction
-Infers data-driven PAGA graphs, Diffusion Pseudotime (DPT), and Newick lineage trees (`all_tips.nwk` for `scMultiSim` and `classic.nwk`):
-
-```bash
-# Arabidopsis Root
-cd 02_lineage_trees_paga/arabidopsis && python arab_paga_lineage_tree.py
-
-# Rice
-cd 02_lineage_trees_paga/rice && python rice_paga_lineage_tree.py --tissue all
-
-# Soybean
-cd 02_lineage_trees_paga/soybean && python soybean_paga_lineage_tree.py --tissue all
-```
+Dependency specifications are provided in `environment.yml` and `requirements.txt`.
 
 ---
 
 ## Data Availability
 
-Standardized count matrices, processed AnnData (`.h5ad`) objects, Newick lineage trees (`.nwk`), and 600 DPI publication figures are archived on Zenodo:
-* **DOI**: [10.5281/zenodo.23068394](https://doi.org/10.5281/zenodo.23068394)
+All standardized matrices, processed AnnData (`.h5ad`) objects, empirical Newick lineage trees (`.nwk`), and high-resolution trajectory figures are deposited in Zenodo:
+* **Zenodo Record**: [https://zenodo.org/records/23068394](https://zenodo.org/records/23068394)
+* **Persistent DOI**: [10.5281/zenodo.23068394](https://doi.org/10.5281/zenodo.23068394)
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+The code in this repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
