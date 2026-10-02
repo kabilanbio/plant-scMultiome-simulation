@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+sc_env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# R
+.Rhistory
+.RData
+.Ruserdata
+.Rproj.user/
+*.Rproj
+
+# Large biological data and matrices (archived on Zenodo: 10.5281/zenodo.23068394)
+*.h5ad
+*.rds
+*.RDS
+*.mtx
+*.mtx.gz
+*.tsv.gz
+*.csv.gz
+*.tar.gz
+*.zip
+*.bam
+*.bai
+*.fastq.gz
+
+# Figures and outputs
+figures/
+*.png
+*.jpeg
+*.jpg
+*.pdf
+*.svg
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
