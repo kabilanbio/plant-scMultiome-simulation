@@ -14,16 +14,19 @@ plant-scMultiome-simulation/
 │   ├── preprocess_arabidopsis_root.R          # Arabidopsis Root atlas (21 developmental clusters)
 │   ├── preprocess_rice_all_tissues.R          # Rice (8 tissues)
 │   └── preprocess_soybean_all_tissues.R       # Soybean (7 tissues & developmental stages)
-└── 02_lineage_trees_paga/                     # Empirical PAGA lineage tree inference
-    ├── arabidopsis/
-    │   ├── export_arab_standardized_to_anndata.R
-    │   └── arab_paga_lineage_tree.py
-    ├── rice/
-    │   ├── export_rice_standardized_to_anndata.R
-    │   └── rice_paga_lineage_tree.py
-    └── soybean/
-        ├── export_soybean_standardized_to_anndata.R
-        └── soybean_paga_lineage_tree.py
+├── 02_lineage_trees_paga/                     # Empirical PAGA lineage tree inference
+│   ├── arabidopsis/
+│   │   ├── export_arab_standardized_to_anndata.R
+│   │   └── arab_paga_lineage_tree.py
+│   ├── rice/
+│   │   ├── export_rice_standardized_to_anndata.R
+│   │   └── rice_paga_lineage_tree.py
+│   └── soybean/
+│       ├── export_soybean_standardized_to_anndata.R
+│       └── soybean_paga_lineage_tree.py
+└── 03_grn_inference/                          # Empirical plantFigR Gene Regulatory Network inference
+    └── rice/
+        └── rice_plantFigR_GRN.R               # Rice (8 tissues) plantFigR to scMultiSim GRN pipeline
 ```
 
 ---
